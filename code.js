@@ -80,7 +80,7 @@ for(let i=0; i<7; i++){
 						font = Font.boldRoundedSystemFont(12)
 					}
 				if(i && k==startOfMonth && !counter || counter) counter++
-				if(counter && counter <= endOfMonth)
+				if(counter && counter < endOfMonth)
 					with(addText(""+counter)){
 						if(!k || k==6)
 							textColor = Color.dynamic(new Color("777"), Color.gray())
