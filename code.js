@@ -1,9 +1,6 @@
-//updated the code to work with phones
-
-//change to true if you want to show the widget in scriptable app
+//set to true when making changes to the widget
 let _debug = false
-
-//edit this with your calendar names
+//replace with your calendar names
 let calendars = ["Home","Family","BILLS","Just Us 💑","Philippines Holidays","US Holidays","Birthdays","Siri Suggestions"]
 
 let months=["January","February","March","April","May","June","July","August","September","October","November","December"]
@@ -21,31 +18,33 @@ let startOfMonth = (new Date(date.getFullYear(), date.getMonth(), 1)).getDay()
 let endOfMonth = (new Date(date.getFullYear(), date.getMonth()+1, 0)).getDate()
 	endOfMonth++
 
-//works for ipad air 4
+
 let WW = 342
 let WH = 155
 
 if(Device.isPhone()){
-  //works for iphone 6S
   WW = 322
   WH = 155
 }
+
+let _ratio = [WW*.4, WW*.55] //size ratio of [calendar, eventStack]
 
 let body = widget.addStack()
 with(body){
 	backgroundColor = Color.dynamic(Color.white(), new Color("1a1a1a"))
 	size = new Size(WW, WH)
 	layoutHorizontally()
-	setPadding(0,4,0,0)
+	addSpacer(6)
 }
 
 
 let calendar = body.addStack()
 	with(calendar){
-		size = new Size(WW/2.5,WH*.95)
+		size = new Size(_ratio[0], WH*.95)
 		backgroundColor = Color.clear()
-		spacing = -5
+		spacing = 0
 		layoutVertically()
+		setPadding(8,0,0,0)
 	}
 	
 let monthLabel = calendar.addStack()
@@ -63,6 +62,7 @@ let cells = calendar.addStack()
 	with(cells){
 		size = new Size(calendar.size.width, calendar.size.height*.85)
 		layoutVertically()
+		setPadding(12,0,0,0)
 	}
 
 let counter = 0
@@ -71,7 +71,7 @@ for(let i=0; i<7; i++){
 	with(cells.addStack()){
 		for(let k=0; k<7; k++){
 			with(addStack()){
-				size = new Size(18,17)
+				size = new Size(18,19)
 				centerAlignContent()
 				if(!i && k<7)
 					with(addText(days[k])){
@@ -80,23 +80,22 @@ for(let i=0; i<7; i++){
 						font = Font.boldRoundedSystemFont(12)
 					}
 				if(i && k==startOfMonth && !counter || counter) counter++
+
 				if(counter && counter < endOfMonth)
 					with(addText(""+counter)){
 						if(!k || k==6)
 							textColor = Color.dynamic(new Color("777"), Color.gray())
 						if(counter==date.getDate()){
-							cornerRadius = 8//22
+							cornerRadius = 8
 							backgroundColor = Color.red()
 							textColor = Color.white()
 						}
-						font = Font.boldRoundedSystemFont(10)
+						font = Font.boldRoundedSystemFont(11)
 					}
 			}
 		}
 	}
 }
-
-body.addSpacer(4)
 
 with(body.addStack()){
 	setPadding(body.size.height*.1,0,0,0)
@@ -117,8 +116,8 @@ for(let i=0;i<calendars.length;i++){
 let events = {
 	today:[],
 	tomorrow:[],
-	week:[],		//this week
-	next:[]			//next week
+	week:[],	//this week
+	next:[]		//next week
 }
 	
 
@@ -159,7 +158,7 @@ for(let _w in {"tomorrow":0,"week":0,"next":0} ){
 let eventStack = body.addStack()
 with(eventStack){
 	layoutVertically()
-	size = new Size(WW*.5,WH*.95)
+	size = new Size(_ratio[1], WH*.95)
 	topAlignContent()
 	setPadding(4,0,0,0)
 	
@@ -188,8 +187,7 @@ with(eventStack){
 							font = Font.heavySystemFont(9)
 						}
 					}
-						//with(addText("🎁 "))
-							//font = Font.systemFont(9)
+
 					with(addText(events[i][k].title)){
 						lineLimit = 1
 						textColor = Color.dynamic(new Color(darkenHex(events[i][k].calendar.color.hex,.67)), new Color(events[i][k].calendar.color.hex))
@@ -221,4 +219,3 @@ function darkenHex(_color, _amount){
 	
 	return _temp.join("")
 }
-	
