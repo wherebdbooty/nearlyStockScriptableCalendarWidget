@@ -183,6 +183,7 @@ with(eventStack){
 				let eventTitle = events[i][k].title
 				with(addStack()){
 					if(events[i][k].calendar.title=="Birthdays"){
+						addSpacer(2)
 						with(addStack()){
 							size = new Size(12-totalEvents/7,12-totalEvents/7)
 							addImage(drawBirthdayPresent(new Size(50,50), new Point(0,0)))
